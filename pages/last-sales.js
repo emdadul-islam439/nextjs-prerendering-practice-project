@@ -7,7 +7,7 @@ function LastSalesPage() {
 
   const {data, error} = useSWR(
     "https://nextjs-course-dcbca-default-rtdb.firebaseio.com/sales.json",
-    (url) => fetch(url).then((res) => res.json())
+    // (url) => fetch(url).then((res) => res.json())
   );
   useEffect(() => {
     if (data) {
