@@ -5,8 +5,8 @@ function LastSalesPage() {
   const [sales, setSales] = useState([]);
   //   const [isLoading, setIsLoading] = useState(false);
 
-  const {data, error} = useSWR(
-    "https://nextjs-course-dcbca-default-rtdb.firebaseio.com/sales.json",
+  const { data, error } = useSWR(
+    "https://nextjs-course-dcbca-default-rtdb.firebaseio.com/sales.json"
     // (url) => fetch(url).then((res) => res.json())
   );
   useEffect(() => {
@@ -65,3 +65,21 @@ function LastSalesPage() {
 }
 
 export default LastSalesPage;
+
+export async function getStaticProps(context) {
+  const response = await fetch(
+    "https://nextjs-course-dcbca-default-rtdb.firebaseio.com/sales.json"
+  );
+  const data = await response.json();
+  const transformedSales = [];
+
+  for (const key in data) {
+    transformedSales.push({
+      id: key,
+      username: data[key].username,
+      volume: data[key].volume,
+    });
+  }
+
+  return { props: { sales: transformedSales }, revalidate: 10 };
+}
