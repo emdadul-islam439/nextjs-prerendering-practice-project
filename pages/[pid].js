@@ -33,6 +33,10 @@ export async function getStaticProps(context) {
     (product) => product.id === productId
   );
 
+  if (!filteredProduct) {
+    return { notFound: true };
+  }
+
   return {
     props: {
       filteredProduct: filteredProduct,
