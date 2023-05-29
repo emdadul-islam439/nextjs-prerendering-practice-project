@@ -4,6 +4,11 @@ import fs from "fs/promises";
 
 function ProductDetailsPage(props) {
   const { filteredProduct } = props;
+
+  //   if(!filteredProduct){
+  //     return <p>Loading...</p>
+  //   }
+
   return (
     <Fragment>
       <h1>{filteredProduct.title}</h1>
@@ -12,11 +17,15 @@ function ProductDetailsPage(props) {
   );
 }
 
-export async function getStaticProps(context) {
-  console.log("revalidating... product-details");
+async function getData() {
   const filePath = path.join(process.cwd(), "data", "dummy-backend.json");
   const jsonData = await fs.readFile(filePath);
-  const data = JSON.parse(jsonData);
+  return JSON.parse(jsonData);
+}
+
+export async function getStaticProps(context) {
+  console.log("revalidating... product-details");
+  const data = await getData();
 
   const { params } = context;
   const productId = params.pid;
@@ -32,11 +41,15 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
+  const data = await getData();
+
+  const ids = data.products.map((product) => product.id);
+  const pathsWithParams = ids.map((id) => ({ params: { pid: id } }));
+
   return {
-    paths: [
-      { params: { pid: "p1" } },
-    ],
-    fallback: true,
+    paths: pathsWithParams,
+    // fallback: true,
+    fallback: "blocking",
   };
 }
 
