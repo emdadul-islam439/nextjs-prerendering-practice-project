@@ -1,11 +1,13 @@
 import { Fragment } from "react";
+import path from "path";
+import fs from "fs/promises";
 
 function ProductDetailsPage(props) {
-  const { fileteredProduct } = props;
+  const { filteredProduct } = props;
   return (
     <Fragment>
-      <h1>{fileteredProduct.title}</h1>
-      <p>{fileteredProduct.description}</p>
+      <h1>{filteredProduct.title}</h1>
+      <p>{filteredProduct.description}</p>
     </Fragment>
   );
 }
@@ -18,12 +20,25 @@ export async function getStaticProps(context) {
 
   const { params } = context;
   const productId = params.pid;
-  const filteredProduct = data.products.find((product) => product.id === productId);
+  const filteredProduct = data.products.find(
+    (product) => product.id === productId
+  );
 
   return {
     props: {
       filteredProduct: filteredProduct,
     },
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { pid: "p1" } },
+      { params: { pid: "p2" } },
+      { params: { pid: "p3" } },
+    ],
+    fallback: false,
   };
 }
 
